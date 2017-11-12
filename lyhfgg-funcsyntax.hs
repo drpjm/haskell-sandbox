@@ -37,17 +37,17 @@ computeBmi weight height = weight / height ^ 2
 -- They are specified using '|' after the function parameter list.
 bmiTell :: (RealFloat a) => a -> a -> String
 bmiTell w h
-	| computeBmi w h <= 18.5 	= "Go eat a steak!"
-	| computeBmi w h <= 25.0 	= "Looks good to me."
-	| computeBmi w h <= 30.0 	= "Whoa nelly!"
-	| otherwise 	= "You busted the scale!"
+        | computeBmi w h <= 18.5 = "Go eat a steak!"
+        | computeBmi w h <= 25.0 = "Looks good to me."
+        | computeBmi w h <= 30.0 = "Whoa nelly!"
+        | otherwise = "You busted the scale!"
 
 -- Example with infix function
 myCompare :: (Ord a) => a -> a -> Ordering 
 a `myCompare` b
-	| a > b = GT
-	| a == b = EQ
-	| otherwise = LT
+    | a > b = GT
+    | a == b = EQ
+    | otherwise = LT
 
 -- We can add the "where" keyword to bind values for the guards.
 bmiTell' :: (RealFloat a) => a -> a -> String
@@ -56,7 +56,7 @@ bmiTell' w h
         | bmi <= 25.0        = "Looks good to me."
         | bmi <= 30.0        = "Whoa nelly!"
         | otherwise     = "You busted the scale!"
-	where bmi = w / h ^ 2
+    where bmi = w / h ^ 2
 -- You can also pattern match. Alternate where:
 {- where bmi = w / h ^ 2
 	 (skinny, normal, fat) = (18.5, 25.0, 30.0) -}
@@ -64,6 +64,26 @@ bmiTell' w h
 -- Where blocks may also have functions...
 calcBmis :: (RealFloat a) => [(a,a)] -> [a]
 calcBmis xs = [bmi w h | (w, h) <- xs]
-	where bmi w h = w / h ^ 2
+        where bmi w h = w / h ^ 2
 
+-- Lets act like where, but ARE expressions themselves.
+-- So they can go anywhere an expression can!
+-- Example: BMI calculation with let
+calcBmis' :: (RealFloat a) => [(a,a)] -> [a]
+calcBmis' xs = [bmi | (w,h) <- xs, let bmi = w /h ^ 2, bmi > 25.0]
+-- The let above binds to the output (bmi) and anything else within the comprehension.
+
+-- Case expressions have the same behavior as function pattern matching, but
+-- they can be used anywhere!
+describeList :: [a] -> String  
+describeList xs = "The list is " ++ case xs of [] -> "empty."  
+                                               [x] -> "a singleton list."   
+                                               xs -> "a longer list."
+
+-- The same function can use where:
+describeList' :: [a] -> String
+describeList' xs = "The list is " ++ what xs
+    where   what [] = "empty."
+            what [x] = "a singleton list."
+            what xs = "a longer list."
 
