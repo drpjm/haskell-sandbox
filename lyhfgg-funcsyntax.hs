@@ -22,3 +22,48 @@ length' :: (Num b) => [a] -> b
 length' [] = 0
 length' (_:xs) = 1 + length' xs
 -- In the above code, we do not care about the head, so only bind the rest.
+
+-- Patterns, the @ syntax
+capital :: String -> String
+capital "" = "Empty string!"
+capital all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
+-- "all" maintains the whole
+
+-- BMI Calculation function
+computeBmi :: (RealFloat a) => a -> a -> a
+computeBmi weight height = weight / height ^ 2
+
+-- Guards example: the BMI function
+-- They are specified using '|' after the function parameter list.
+bmiTell :: (RealFloat a) => a -> a -> String
+bmiTell w h
+	| computeBmi w h <= 18.5 	= "Go eat a steak!"
+	| computeBmi w h <= 25.0 	= "Looks good to me."
+	| computeBmi w h <= 30.0 	= "Whoa nelly!"
+	| otherwise 	= "You busted the scale!"
+
+-- Example with infix function
+myCompare :: (Ord a) => a -> a -> Ordering 
+a `myCompare` b
+	| a > b = GT
+	| a == b = EQ
+	| otherwise = LT
+
+-- We can add the "where" keyword to bind values for the guards.
+bmiTell' :: (RealFloat a) => a -> a -> String
+bmiTell' w h
+        | bmi <= 18.5        = "Go eat a steak!"
+        | bmi <= 25.0        = "Looks good to me."
+        | bmi <= 30.0        = "Whoa nelly!"
+        | otherwise     = "You busted the scale!"
+	where bmi = w / h ^ 2
+-- You can also pattern match. Alternate where:
+{- where bmi = w / h ^ 2
+	 (skinny, normal, fat) = (18.5, 25.0, 30.0) -}
+
+-- Where blocks may also have functions...
+calcBmis :: (RealFloat a) => [(a,a)] -> [a]
+calcBmis xs = [bmi w h | (w, h) <- xs]
+	where bmi w h = w / h ^ 2
+
+
