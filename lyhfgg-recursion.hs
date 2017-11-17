@@ -35,4 +35,33 @@ reverse' :: [a] -> [a]
 reverse' [] = []
 reverse' (x:xs) = reverse' xs ++ [x]
 
+-- zip needs two edge conditions to handle two params
+zip' :: [a] -> [b] -> [(a,b)]
+zip' [] _ = []
+zip' _ [] = []
+zip' (x:xs) (y:ys) = (x,y):zip' xs ys
+
+-- elem takes an element (of equality type, Eq) and a list and returns whether
+-- the element is in the list
+-- edge case: the empty list will never have the element
+-- recursion: pop the head and compare to a, if == then True, otherwise, 
+-- call elem' on the tail
+elem' :: (Eq a) => a -> [a] -> Bool
+elem' a [] = False
+elem' a (x:xs)
+    | a == x    = True
+    | otherwise = a `elem'` xs
+
+-- Quicksort in Haskell using recursion
+-- edge case: the empty list is sorted
+quicksort :: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) = 
+    let smaller = quicksort [a | a <- xs, a <= x]
+        bigger = quicksort [a | a <- xs, a > x]
+    in smaller ++ [x] ++ bigger
+
+
+
+
 
